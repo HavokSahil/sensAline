@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
         lineFolButton.setOnClickListener {
             val intent = Intent(this, LineDetector::class.java)
+            intent.putExtra("UDP_SERVER_IP", editIP.text.toString())
             startActivity(intent)
         }
 

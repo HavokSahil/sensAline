@@ -23,6 +23,12 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,11 +48,23 @@ public class LineDetector extends CameraActivity implements CvCameraViewListener
         Log.i(TAG, "Instantiated new " + this.getClass());
     }
 
+    private DatagramSocket socket;
+    private InetAddress address;
+    private final int port = 4440;
+    private String udpServerIpAddress = "0.0.0.0";
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "called onCreate");
         super.onCreate(savedInstanceState);
+
+        udpServerIpAddress = getIntent().getStringExtra("UDP_SERVER_IP");
+        try {
+            socket = new DatagramSocket();
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
 
         //! [ocv_loader_init]
         if (OpenCVLoader.initLocal()) {
@@ -94,6 +112,7 @@ public class LineDetector extends CameraActivity implements CvCameraViewListener
     @Override
     public void onDestroy() {
         super.onDestroy();
+        socket.close();
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
     }
@@ -138,6 +157,7 @@ public class LineDetector extends CameraActivity implements CvCameraViewListener
             if (M.get_m00()!=0) {
                 int cx = (int) (M.get_m10()/M.get_m00());
                 int cy = (int) (M.get_m01()/M.get_m00());
+                sendUDP(cx, cy);
                 String text = "CX: "+cx+", CY: "+cy;
                 Imgproc.putText(mIntermediateMat, text, new Point(30, 30), Imgproc.FONT_HERSHEY_SIMPLEX, 1, new Scalar(255, 0, 0), 2);
                 Imgproc.circle(mIntermediateMat, new Point(cx, cy), 5 , new Scalar(200, 100, 0));
@@ -149,5 +169,23 @@ public class LineDetector extends CameraActivity implements CvCameraViewListener
         hierarchy.release();
         // Apply mask to frame
         return mIntermediateMat;
+    }
+
+    private void sendUDP(int cx, int cy) {
+        new Thread(() -> {
+            try {
+                address = InetAddress.getByName(udpServerIpAddress);
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+            String message = "[L]; CX: "+cx + ", CY: "+cy;
+            byte[] sendData = message.getBytes();
+            DatagramPacket packet = new DatagramPacket(sendData, sendData.length, address, port);
+            try {
+                socket.send(packet);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }
