@@ -9,7 +9,6 @@ import android.widget.TextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TableRow
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
 // UDP server
@@ -23,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-private const val TAG = "UDP_SENDER"
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
@@ -39,6 +37,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var editIP: EditText
     private lateinit var serialButton: Button
     private lateinit var lineFolButton: Button
+    private lateinit var puzzleButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +50,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         sendButton = findViewById(R.id.udp_send_button)
         editIP = findViewById(R.id.editIP)
         lineFolButton = findViewById(R.id.line_detector_button)
-
+        puzzleButton = findViewById(R.id.opencv_puzzle)
         serialButton = findViewById(R.id.serial_send_button)
         serialButton.setOnClickListener {
             if (isSerialSending) {
@@ -61,8 +60,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             }
             isSerialSending = !isSerialSending
         }
+        puzzleButton.setOnClickListener {
+            val intent = Intent(this, Puzzle15Activity::class.java)
+            startActivity(intent)
+        }
         lineFolButton.setOnClickListener {
-            val intent = Intent(this, Puzzle15Activity::class.java);
+            val intent = Intent(this, LineDetector::class.java)
             startActivity(intent)
         }
 
@@ -124,10 +127,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         // Not implemented
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
     private fun updateTableLayout(tableRow: TableRow, sensorType: String, values: List<String>) {
         val x = tableRow.getChildAt(0) as? TextView
