@@ -162,4 +162,14 @@
         android:text="Send Serial"
         android:background="@drawable/button_background"/>
 
+    <Button
+        android:id="@+id/line_detector_button"
+        android:layout_width="90dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/udp_send_button"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_background"
+        android:text="Line Detector"/>
+
 </RelativeLayout>

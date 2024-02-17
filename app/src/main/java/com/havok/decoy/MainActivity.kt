@@ -11,7 +11,7 @@ import android.widget.EditText
 import android.widget.TableRow
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-
+import android.content.Intent
 // UDP server
 import java.net.DatagramSocket
 import java.net.DatagramPacket
@@ -22,17 +22,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-// USB serial
-import android.hardware.usb.UsbDevice
-import android.hardware.usb.UsbManager
-import java.io.IOException
-import android.app.PendingIntent
-import android.content.Context
-import android.content.IntentFilter
-import android.content.Intent
-import android.hardware.usb.UsbAccessory
-import java.io.FileDescriptor
-import java.io.FileOutputStream
 
 private const val TAG = "UDP_SENDER"
 
@@ -49,6 +38,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private var udpSocket: DatagramSocket?=null
     private lateinit var editIP: EditText
     private lateinit var serialButton: Button
+    private lateinit var lineFolButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +50,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
         sendButton = findViewById(R.id.udp_send_button)
         editIP = findViewById(R.id.editIP)
+        lineFolButton = findViewById(R.id.line_detector_button)
 
         serialButton = findViewById(R.id.serial_send_button)
         serialButton.setOnClickListener {
@@ -69,6 +60,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 serialButton.text = "SERIAL STOP"
             }
             isSerialSending = !isSerialSending
+        }
+        lineFolButton.setOnClickListener {
+            val intent = Intent(this, Puzzle15Activity::class.java);
+            startActivity(intent)
         }
 
         sendButton.setOnClickListener {

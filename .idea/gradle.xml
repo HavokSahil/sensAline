@@ -12,6 +12,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$USER_HOME$/Downloads/Applications/OPENCVAND/OpenCV-android-sdk/sdk" />
           </set>
         </option>
       </GradleProjectSettings>
