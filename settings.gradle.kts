@@ -13,7 +13,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name="gSENSE"
+rootProject.name="inSENSE"
 val opencvsdk = "/home/sahil/Downloads/Applications/OPENCVAND/OpenCV-android-sdk/sdk/"
 
 rootProject.name = "decoy"
