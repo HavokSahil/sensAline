@@ -67,7 +67,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 serialButton.text = "SSRL"
             } else {
                 serialButton.text = "ESRL"
-                serialButton.text = "ESRL"
             }
             isSerialSending = !isSerialSending
         }
@@ -106,15 +105,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent) {
         val formatValue: (Float)->String={"%.2f".format(it)}
         if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
-            val accelerationX = String.format("X: %.2f", event.values[0])
-            val accelerationY = String.format("Y: %.2f", event.values[1])
-            val accelerationZ = String.format("Z: %.2f", event.values[2])
             // Update UI with accelerometer data
             updateLayout("ACC", event.values.map(formatValue))
         } else if (event.sensor.type == Sensor.TYPE_GYROSCOPE) {
-            val gyroX = String.format("X: %.2f", event.values[0])
-            val gyroY = String.format("Y: %.2f", event.values[1])
-            val gyroZ = String.format("Z: %.2f", event.values[2])
             // Update UI with gyroscope data
             updateLayout("GYR", event.values.map(formatValue))
         }
